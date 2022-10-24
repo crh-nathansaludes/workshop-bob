@@ -17,17 +17,19 @@ const RESPONSE_E = "Fine. Be that way!";
 Implementation:
 Checks if the expression contains 1 single lowercase letter
 --------------------------------------------------------------------------------------------------------- */
-function checkIfAllCapital(expression = []) {
-  const lastIndex = (checkIfHasNoPunctuation(expression) ? expression.length : expression.length - 1);
-  for (let index = 0; index < lastIndex; index++) {
-    const ascii_value = expression.charCodeAt(index);
+function isAllCapital(expression) {
+   let asciiValue = '';
+   const lastIndexOfString = (hasNoPunctuation(expression) ? expression.length : expression.length - 1);
 
-    if (ascii_value >= 97 && ascii_value <= 122) {
-      return false;
-    }
-  }
+   for (let index = 0; index < lastIndexOfString; index++) {
+      asciiValue = expression.charCodeAt(index);
 
-  return true;
+      if (asciiValue >= 97 && asciiValue <= 122) {
+         return false;
+      }
+   }
+
+   return true;
 }
 
 
@@ -36,18 +38,17 @@ Implementation:
 Check if the expression contains any other character aside from numbers. If not, then the expression is
 considered numeric ONLY.
 --------------------------------------------------------------------------------------------------------- */
-function checkIfNumericOnly(expression = []) {
-  let ascii_value = '';
-  const lastIndex = (checkIfHasNoPunctuation(expression) ? expression.length : expression.length - 1);
+function isNumericOnly(expression) {
+   let asciiValue = '';
+   const lastIndexOfString = (hasNoPunctuation(expression) ? expression.length : expression.length - 1);
 
-  for (let index = 0; index < lastIndex; index++) {
-    ascii_value = expression.charCodeAt(index);
-    if (ascii_value < 48 || ascii_value > 57) {
-      return false;
-    }
-  }
-
-  return true;
+   for (let index = 0; index < lastIndexOfString; index++) {
+      asciiValue = expression.charCodeAt(index);
+      if (asciiValue < 48 || asciiValue > 57) {
+         return false;
+      }
+   }
+   return true;
 }
 
 
@@ -55,12 +56,11 @@ function checkIfNumericOnly(expression = []) {
 Implementation:
 Checks if the expression contains a question punctuation at the end.
 --------------------------------------------------------------------------------------------------------- */
-function checkIfQuestion(expression = []) {
-  if (expression[expression.length - 1] === "?") {
-    return true;
-  }
-
-  return false;
+function isQuestion(expression) {
+   if (expression.charAt(expression.length - 1) === "?") {
+      return true;
+   }
+   return false;
 }
 
 
@@ -68,12 +68,11 @@ function checkIfQuestion(expression = []) {
 Implementation:
 Checks if the expression contains a exclamation punctuation at the end.
 --------------------------------------------------------------------------------------------------------- */
-function checkIfExclamatory(expression = []) {
-  if (expression[expression.length - 1] === "!") {
-    return true;
-  }
-
-  return false;
+function isExclamatory(expression) {
+   if (expression.charAt(expression.length - 1) === "!") {
+      return true;
+   }
+   return false;
 }
 
 
@@ -81,12 +80,11 @@ function checkIfExclamatory(expression = []) {
 Implementation:
 Checks if the expression contains a period at the end.
 --------------------------------------------------------------------------------------------------------- */
-function checkIfStatement(expression = []) {
-  if (expression[expression.length - 1] === ".") {
-    return true;
-  }
-
-  return false;
+function isStatement(expression) {
+   if (expression.charAt(expression.length - 1) === ".") {
+      return true;
+   }
+   return false;
 }
 
 
@@ -94,129 +92,96 @@ function checkIfStatement(expression = []) {
 Implementation:
 Checks if the expression does NOT end with a punctuation.
 --------------------------------------------------------------------------------------------------------- */
-function checkIfHasNoPunctuation(expression = []) {
-  if (!checkIfQuestion(expression) && !checkIfExclamatory(expression) && !checkIfStatement(expression)) {
-    return true;
-  }
-
-  return false;
+function hasNoPunctuation(expression) {
+   if (!isQuestion(expression) && !isExclamatory(expression) && !isStatement(expression)) {
+      return true;
+   }
+   return false;
 }
 
 
 function evaluateExpression(expression) {
 
-  if(!expression) {
-    return RESPONSE_E;
-  }
+   if (!expression) {
+      return RESPONSE_E;
+   }
 
-  const criteria = {
-    allUpperCase: false,
-    isQuestion: false,
-    isExclamatory: false,
-    isStatement: false,
-    hasNoPunctuation: false,
-    isNumericOnly: false,
-  }
+   if (isNumericOnly(expression)) {
+      if (isQuestion(expression)) {
+         return RESPONSE_C;
+      }
+   }
 
-  if (checkIfAllCapital(expression)) {
-    criteria.allUpperCase = true;
-  }
+   if (isAllCapital(expression)) {
+      if (isQuestion(expression)) {
+         return RESPONSE_D;
+      }
 
-  if (checkIfQuestion(expression)) {
-    criteria.isQuestion = true;
-    criteria.isExclamatory = false;
-  }
+      if (isExclamatory(expression)) {
+         return RESPONSE_B;
+      }
 
-  if (checkIfExclamatory(expression)) {
-    criteria.isExclamatory = true;
-    criteria.isQuestion = false;
-  }
+      if (isStatement(expression)) {
+         return RESPONSE_B;
+      }
 
-  if (checkIfStatement(expression)) {
-    criteria.isStatement = true;
-    criteria.isExclamatory = false;
-    criteria.isQuestion = false;
-  }
+      if (hasNoPunctuation(expression)) {
+         return RESPONSE_B;
+      }
+   }
 
-  if (checkIfHasNoPunctuation(expression)) {
-    criteria.hasNoPunctuation = true;
-  }
+   if (isQuestion(expression)) {
+      return RESPONSE_C;
+   }
 
-  if (checkIfNumericOnly(expression)) {
-    criteria.isNumericOnly = true;
-    criteria.allUpperCase = false;
-  }
+   if (isExclamatory(expression)) {
+      return RESPONSE_A
+   }
 
-  if (criteria.allUpperCase) {
-    if (criteria.isQuestion) {
-      return RESPONSE_D;
-    }
-
-    if (criteria.isExclamatory) {
-      return RESPONSE_B;
-    }
-
-    if (criteria.isStatement) {
-      return RESPONSE_B;
-    }
-
-    if (criteria.hasNoPunctuation) {
-      return RESPONSE_B;
-    }
-  }
-
-  if (criteria.isQuestion) {
-    return RESPONSE_C;
-  }
-
-  if (criteria.isExclamatory) {
-    return RESPONSE_A
-  }
-
-  if (criteria.isStatement) {
-    return RESPONSE_A
-  }
+   if (isStatement(expression)) {
+      return RESPONSE_A
+   }
 }
 
 function hey(expression) {
-  return evaluateExpression(expression);
+   return evaluateExpression(expression);
 }
 
 (_ => {
-  console.log('Running hey...');
-  // Stating Something
-  console.log(hey('Tom-ay-to, tom-aaaah-to.') === 'Whatever.');
+   console.log('Running hey...');
+   // Stating Something
+   console.log(hey('Tom-ay-to, tom-aaaah-to.') === 'Whatever.');
 
-  // Shouting
-  console.log(hey('WATCH OUT!') === 'Whoa, chill out!');
+   // Shouting
+   console.log(hey('WATCH OUT!') === 'Whoa, chill out!');
 
-  // Shouting Gibberish
-  console.log(hey('FCECDFCAAB') === 'Whoa, chill out!');
+   // Shouting Gibberish
+   console.log(hey('FCECDFCAAB') === 'Whoa, chill out!');
 
-  // Asking a question
-  console.log(hey('Does this cryogenic chamber make me look fat?') === 'Sure.');
+   // Asking a question
+   console.log(hey('Does this cryogenic chamber make me look fat?') === 'Sure.');
 
-  // Asking a numeric question
-  console.log(hey('You are, what, like 15?') === 'Sure.');
+   // Asking a numeric question
+   console.log(hey('You are, what, like 15?') === 'Sure.');
 
-  // Asking gibberish
-  console.log(hey('fffbbcbeab?') === 'Sure.');
+   // Asking gibberish
+   console.log(hey('fffbbcbeab?') === 'Sure.');
 
-  // Talking forcefully
-  console.log(hey("Let's go make out behind the gym!") === 'Whatever.');
+   // Talking forcefully
+   console.log(hey("Let's go make out behind the gym!") === 'Whatever.');
 
-  // Using acronyms in regular speech
-  console.log(hey("It's OK if you don't want to go to the DMV.") === 'Whatever.');
+   // Using acronyms in regular speech
+   console.log(hey("It's OK if you don't want to go to the DMV.") === 'Whatever.');
 
-  // Forceful question
-  console.log(hey('WHAT THE HELL WERE YOU THINKING?') === 'Calm down, I know what I\'m doing!');
+   // Forceful question
+   console.log(hey('WHAT THE HELL WERE YOU THINKING?') === 'Calm down, I know what I\'m doing!');
 
-  // Shouting numbers
-  console.log(hey('1, 2, 3 GO!') === 'Whoa, chill out!');
+   // Shouting numbers
+   console.log(hey('1, 2, 3 GO!') === 'Whoa, chill out!');
 
-  // Only numbers
-  console.log(hey('4?') === 'Sure.');
+   // Only numbers
+   console.log(hey('4?') === 'Sure.');
 
-  // Shouting with special characters
-  console.log(hey('ZOMG THE %^*@#$(*^ ZOMBIES ARE COMING!!11!!1!') === 'Whoa, chill out!');
+   // Shouting with special characters
+   console.log(hey('ZOMG THE %^*@#$(*^ ZOMBIES ARE COMING!!11!!1!') === 'Whoa, chill out!');
 })();
