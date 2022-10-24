@@ -57,7 +57,7 @@ Implementation:
 Checks if the expression contains a question punctuation at the end.
 --------------------------------------------------------------------------------------------------------- */
 function isQuestion(expression) {
-   if (expression.charAt(expression.length - 1) === "?") {
+   if (expression.slice(-1) === "?") {
       return true;
    }
    return false;
@@ -69,7 +69,7 @@ Implementation:
 Checks if the expression contains a exclamation punctuation at the end.
 --------------------------------------------------------------------------------------------------------- */
 function isExclamatory(expression) {
-   if (expression.charAt(expression.length - 1) === "!") {
+   if (expression.slice(-1) === "!") {
       return true;
    }
    return false;
@@ -81,7 +81,7 @@ Implementation:
 Checks if the expression contains a period at the end.
 --------------------------------------------------------------------------------------------------------- */
 function isStatement(expression) {
-   if (expression.charAt(expression.length - 1) === ".") {
+   if (expression.slice(-1) === ".") {
       return true;
    }
    return false;
